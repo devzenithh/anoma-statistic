@@ -12,69 +12,68 @@
       color: #f5f5f5;
     }
     .card {
-  background: linear-gradient(135deg, rgba(40,40,40,0.95), rgba(25,25,25,0.95));
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.6);
-  color: #f1f1f1;   /* default text jadi terang */
-}
-
-.card h4 {
-  color: #ffcb57;   /* judul step jadi kuning gold */
-  font-weight: bold;
-}
-
-.tutorial-step {
-  margin-bottom: 12px;
-  font-size: 15px;
-  color: #e0e0e0;
-}
-
-.tutorial-step i {
-  width: 25px;
-  margin-right: 8px;
-  color: #7dd3fc; /* ikon biru terang */
-}
-
-a {
-  color: #4da6ff;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-.btn-start {
-  background: linear-gradient(135deg, #7f5af0, #2cb67d);
-  border: none;
-  color: #fff;
-  font-weight: bold;
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(127,90,240,0.6), 0 0 25px rgba(44,182,125,0.6);
-  transition: all 0.3s ease-in-out;
-  animation: glow 2s infinite alternate;
-}
-
-.btn-start i {
-  margin-right: 8px;
-}
-
-.btn-start:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(127,90,240,0.9), 0 0 40px rgba(44,182,125,0.9);
-  opacity: 0.95;
-}
-
-@keyframes glow {
-  from {
-    box-shadow: 0 0 8px rgba(127,90,240,0.6), 0 0 16px rgba(44,182,125,0.6);
-  }
-  to {
-    box-shadow: 0 0 20px rgba(127,90,240,1), 0 0 40px rgba(44,182,125,1);
-  }
-}
-
+      background: linear-gradient(135deg, rgba(40,40,40,0.95), rgba(25,25,25,0.95));
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+      color: #f1f1f1;
+    }
+    .card h4 {
+      color: #ffcb57;
+      font-weight: bold;
+    }
+    .tutorial-step {
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #e0e0e0;
+    }
+    .tutorial-step i {
+      width: 25px;
+      margin-right: 8px;
+      color: #7dd3fc;
+    }
+    a {
+      color: #4da6ff;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, #7f5af0, #2cb67d);
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(127,90,240,0.6), 0 0 25px rgba(44,182,125,0.6);
+      transition: all 0.3s ease-in-out;
+      animation: glow 2s infinite alternate;
+    }
+    .btn-start i {
+      margin-right: 8px;
+    }
+    .btn-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(127,90,240,0.9), 0 0 40px rgba(44,182,125,0.9);
+      opacity: 0.95;
+    }
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 8px rgba(127,90,240,0.6), 0 0 16px rgba(44,182,125,0.6);
+      }
+      to {
+        box-shadow: 0 0 20px rgba(127,90,240,1), 0 0 40px rgba(44,182,125,1);
+      }
+    }
+    @keyframes glowTitle {
+      from { text-shadow: 0 0 5px #7f5af0, 0 0 10px #2cb67d; }
+      to   { text-shadow: 0 0 15px #7f5af0, 0 0 30px #2cb67d; }
+    }
+    @keyframes blink {
+      from { text-shadow: 0 0 5px #ff1177, 0 0 10px #ff1177; color: #fff; }
+      to   { text-shadow: 0 0 20px #ff1177, 0 0 40px #ff1177; color: #ffe6f0; }
+    }
   </style>
 </head>
 <body>
@@ -83,7 +82,7 @@ a:hover {
   <!-- Title -->
   <div class="d-flex align-items-center mb-4">
     <img src="/static/anoma_logo.png" class="me-2" width="40" height="40">
-    <h2 class="fw-bold">Anoma Testnet Statistics</h2>
+    <h2 class="fw-bold" style="animation: glowTitle 3s infinite alternate;">Anoma Testnet Statistics</h2>
   </div>
 
   <!-- Token Form -->
@@ -91,13 +90,32 @@ a:hover {
     <form method="POST">
       <div class="mb-3">
         <label for="bearer" class="form-label">Bearer Token</label>
-        <input type="text" class="form-control" id="bearer" name="bearer" placeholder="Paste your token here..." required>
+        <input type="text" class="form-control" id="bearer" name="bearer"
+               placeholder="Paste your Bearer token (without the word 'Bearer')" required autofocus>
       </div>
       <button type="submit" class="btn btn-start w-100">
         <i class="fa-solid fa-chart-line"></i> Get Statistics
       </button>
-      
     </form>
+
+    <!-- Show errors if any -->
+    {% if error %}
+    <div class="alert alert-danger mt-3">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Show retry logs if any -->
+    {% if logs %}
+    <div class="alert alert-warning mt-3">
+      <b>Retry Logs:</b>
+      <ul class="mb-0">
+        {% for msg in logs %}
+          <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
   </div>
 
   <!-- Tutorial -->
@@ -108,6 +126,11 @@ a:hover {
     <div class="tutorial-step"><i class="fa-solid fa-network-wired"></i> Go to tab <b>Network</b></div>
     <div class="tutorial-step"><i class="fa-solid fa-dice"></i> Open <b>Garapon Menu</b></div>
     <div class="tutorial-step"><i class="fa-solid fa-key"></i> On <b>Request Headers</b>, copy <b>authorization</b> (remove the word <code>Bearer</code>)</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center mt-5" style="font-size:14px; animation: blink 2s infinite alternate;">
+    Crafted by <a href="https://twitter.com/dev_zenithh" target="_blank">@dev_zenithh</a>
   </div>
 
 </div>
