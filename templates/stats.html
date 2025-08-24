@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Anoma Testnet Statistic</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1f1f1f, #2a2a2a);
+      font-family: 'Segoe UI', sans-serif;
+      color: #f5f5f5;
+    }
+
+    .title-logo {
+      width: 40px;   /* ukuran fix */
+      height: auto;  /* biar proporsional */
+      margin-right: 10px;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
+
+    /* Profile Card */
+    .profile-card {
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(50,50,50,0.95), rgba(30,30,30,0.85));
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+      color: #fff;
+    }
+
+    /* Total Draws */
+    .total-card {
+      border-radius: 20px;
+      background: linear-gradient(135deg, #3a3a3a, #4a4a4a);
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      margin-bottom: 30px;
+      animation: pulse 2s infinite;
+    }
+
+    /* Lottery Cards */
+    .lottery-card {
+      border-radius: 15px;
+      color: #fff;
+      padding: 25px;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .lottery-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    }
+    .white-bg { background: linear-gradient(135deg, #d7d7d7, #7f8c8d); color: #222; }
+    .blue-bg  { background: linear-gradient(135deg, #2980b9, #2c3e50); }
+    .red-bg   { background: linear-gradient(135deg, #e52d27, #b31217); }
+    .gold-bg  { background: linear-gradient(135deg, #f7971e, #ffd200); color: #222; }
+
+    /* Footer neon effect */
+    .footer {
+      margin-top: 40px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      text-align: center;
+      animation: neonBlink 1.5s infinite alternate;
+    }
+    .footer a {
+      color: #4da6ff;
+      font-weight: bold;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+      color: #77c1ff;
+    }
+    @keyframes neonBlink {
+      from { text-shadow: 0 0 5px #ff1177, 0 0 10px #ff1177, 0 0 20px #ff1177; color: #fff; }
+      to   { text-shadow: 0 0 15px #ff1177, 0 0 30px #ff1177, 0 0 50px #ff1177; color: #ffe6f0; }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container py-5">
+<!-- Title -->
+<div class="d-flex align-items-center mb-4">
+  <img src="/static/anoma_logo.png" class="title-logo">
+  <h2 class="fw-bold">Anoma Testnet Statistic</h2>
+</div>
+
+<!-- Profile Card -->
+<div class="card profile-card shadow-sm mb-4 p-3 d-flex flex-row align-items-center">
+  {% if user.twitter_avatar_url and user.twitter_username %}
+    <img src="{{ user.twitter_avatar_url }}" class="rounded-circle me-3 profile-avatar">
+    <div>
+      <h4 class="mb-1">@{{ user.twitter_username }}</h4>
+      <p class="mb-1"><i class="fa-solid fa-trophy text-warning"></i> Rank: <strong>{{ user.rank }}</strong></p>
+      <p class="mb-0"><i class="fa-solid fa-star text-success"></i> Points: <strong>{{ "{:,}".format(user.points) }}</strong></p>
+    </div>
+  {% else %}
+    <img src="/static/anoma_logo.png" class="rounded-circle me-3 profile-avatar">
+    <div>
+      <h4 class="mb-1">Twitter Not Linked</h4>
+      <p class="mb-1"><i class="fa-solid fa-trophy text-warning"></i> Rank: <strong>{{ user.rank }}</strong></p>
+      <p class="mb-0"><i class="fa-solid fa-star text-success"></i> Points: <strong>{{ "{:,}".format(user.points) }}</strong></p>
+    </div>
+  {% endif %}
+</div>
+
+
+  <!-- Total Draws -->
+  <div class="total-card">
+    <h4>Total Draws</h4>
+    <h1 class="fw-bold">{{ total }}</h1>
+  </div>
+
+  <!-- Lottery Stats -->
+  <div class="row g-4">
+    <div class="col-md-3">
+      <div class="lottery-card white-bg text-center">
+        <h6>⚪ White Ball (100)</h6>
+        <h2>{{ stats.white }}</h2>
+        <p>{{ '%.2f' % (stats.white/total*100 if total>0 else 0) }}%</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="lottery-card blue-bg text-center">
+        <h6>🔵 Blue Ball (2500)</h6>
+        <h2>{{ stats.blue }}</h2>
+        <p>{{ '%.2f' % (stats.blue/total*100 if total>0 else 0) }}%</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="lottery-card red-bg text-center">
+        <h6>🔴 Red Ball (10000)</h6>
+        <h2>{{ stats.red }}</h2>
+        <p>{{ '%.2f' % (stats.red/total*100 if total>0 else 0) }}%</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="lottery-card gold-bg text-center">
+        <h6>🟡 Gold Ball (50000)</h6>
+        <h2>{{ stats.gold }}</h2>
+        <p>{{ '%.2f' % (stats.gold/total*100 if total>0 else 0) }}%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<!-- Footer -->
+<!-- Footer -->
+<div class="footer text-center mt-5">
+  Crafted by 
+  <a href="https://twitter.com/dev_zenithh" target="_blank" style="color:#1DA1F2; text-decoration:none;">
+    <i class="fa-brands fa-twitter"></i> @dev_zenithh
+  </a> | 
+  <a href="https://github.com/devzenithh/anoma-statistic" target="_blank" style="color:#f5f5f5; text-decoration:none;">
+    <i class="fa-brands fa-github"></i> Source Code
+  </a> | 
+  Visitor: {{ visitors }}
+</div>
+
+</div>
+
+</body>
+</html>
